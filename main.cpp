@@ -13,7 +13,7 @@ int main()
     {
         cout << "Введіть вираз (інфіксний): "; getline(cin, value);
         cout << "Postfix: "; ob.Postfix(value); ob.Show();
-        cout << "Prefix: "; ob.Prefix(value); ob.Show();
+        cout << "Prefix: "; ob.Prefix(value); ob.Show(); ob.Calc(value);
 
         cout << "Введіть вираз (постфіксний): "; getline(cin, value);
         cout << "Infix: " ; ob.PostInfix(value); ob.Show();

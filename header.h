@@ -5,6 +5,7 @@
 #include "stack.h"
 #include <algorithm>
 #include <deque>
+#include <stack>
 
 using namespace std;
 
@@ -12,13 +13,16 @@ class order
 {
 private:
         string result;
-        Stack stack;
+        Stack stak;
         deque<string> buffer;
+        deque<char> deq;
+        stack<string> st;
 public:
         void Postfix(string &value);
         void Prefix(string &value);
         void PostInfix(string &value);
         void PrefInfix(string &value);
+        void Calc(string &value);
         void Show() { cout << result << endl; }
 };
 
@@ -31,12 +35,12 @@ void order::Postfix(string &value)
         if((value[i] != '+') && (value[i] != '-') && (value[i] != '^') && (value[i] != ')') && (value[i] != '(' )
                 && (value[i] != '*')) result += value[i];
 
-        if((value[i] == '+') || (value[i] == '-') || (value[i] == '^') || (value[i] == '*')) stack.Push(value[i]);
+        if((value[i] == '+') || (value[i] == '-') || (value[i] == '^') || (value[i] == '*')) stak.Push(value[i]);
 
         if(value[i] == ')')
         {
-            result += stack.first->data;
-            stack.Pop();
+            result += stak.first->data;
+            stak.Pop();
         }
     }
 }
@@ -50,12 +54,12 @@ void order::Prefix(string &value)
         if((value[i] != '+') && (value[i] != '-') && (value[i] != '^') && (value[i] != ')') && (value[i] != '(' )
                 && (value[i] != '*')) result += value[i];
 
-        if((value[i] == '+') || (value[i] == '-') || (value[i] == '^') || (value[i] == '*')) stack.Push(value[i]);
+        if((value[i] == '+') || (value[i] == '-') || (value[i] == '^') || (value[i] == '*')) stak.Push(value[i]);
 
         if(value[i] == '(')
         {
-            result += stack.first->data;
-            stack.Pop();
+            result += stak.first->data;
+            stak.Pop();
         }
     }
 
@@ -125,6 +129,52 @@ void order::PrefInfix(string &value)
     }
 
     buffer.clear();
+}
+
+void order::Calc(string &value)
+{
+    result = "";
+
+    this->Postfix(value);
+
+    for(unsigned int i=0; i<result.length(); i++)
+    {
+        if((result[i] == '+') || (result[i] == '-') || (result[i] == '^') || (result[i] == '*'))
+            deq.push_back(result[i]);
+    }
+
+    int j = 1;
+
+    char temp = result[0];
+    int res = atoi(&temp);
+
+    while(!deq.empty())
+    {
+        while(result[j] != deq.front())
+        {
+            if(deq.front() == '+')
+                res += atoi(&result[j]);
+
+            if(deq.front() == '*')
+                res *= atoi(&result[j]);
+
+            if(deq.front() == '-')
+                res -= atoi(&result[j]);
+
+            if(deq.front() == '^')
+                res *= atoi(&result[j]);
+
+            j++;
+        }
+
+        j++;
+
+        deq.pop_front();
+    }
+
+    deq.clear();
+    cout << "Результат: " << res << endl;
+
 }
 
 #endif // HEADER_H
